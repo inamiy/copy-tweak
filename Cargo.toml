@@ -1,0 +1,17 @@
+[package]
+name = "copy-tweak"
+version = "0.1.0"
+authors = ["Yasuhiro Inami <inamiy@gmail.com>"]
+edition = "2018"
+
+[dependencies]
+clipboard = "0.5.0"
+regex = "1.3.7"
+
+[[bin]]
+name = "copy-tweak"
+path = "src/main.rs"
+
+[[bin]]
+name = "my-copy-tweak"
+path = "my-copy-tweak/rust/main.rs"
