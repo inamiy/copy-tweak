@@ -19,10 +19,10 @@ fn tweak(str: &str) -> String {
 /// Trims Trello's redundant "title + \n + url" format.
 fn tweak_trello_url<'a>(str: &'a str) -> String {
     let re = Regex::new(r"([\s\S]*)https://trello.com/c/(.+?)/[0-9]+.*").unwrap();
-    let str = re.replace(&str, "${1}https://trello.com/c/${2}");
+    let str = re.replace_all(&str, "${1}https://trello.com/c/${2}");
 
     let re = Regex::new(r" on .*? \| Trello").unwrap();
-    let str = re.replace(&str, "");
+    let str = re.replace_all(&str, "");
 
     str.to_string()
 }
@@ -44,7 +44,7 @@ https://trello.com/c/deadbeef"
 /// Trims Quiver's auto-inserted markdown image-alt.
 fn tweak_screen_shot_markdown<'a>(str: &'a str) -> String {
     let re = Regex::new(r"!\[Screen Shot .+? at .+?\]").unwrap();
-    let str = re.replace(&str, "![]");
+    let str = re.replace_all(&str, "![]");
     str.to_string()
 }
 
