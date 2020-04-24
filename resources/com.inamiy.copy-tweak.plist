@@ -9,13 +9,15 @@
 		<string>~/.cargo/bin/copy-tweak</string>
 		<string>${MY_COPY_TWEAK_DIR}/my-copy-tweak</string>
 	</array>
-	<key>RunAtLoad</key>
-	<true/>
 	<key>StandardOutPath</key>
 	<string>/dev/null</string>
 	<key>StandardErrorPath</key>
 	<string>/dev/null</string>
+	<key>RunAtLoad</key>
+	<true/>
 	<key>LaunchOnlyOnce</key>
+	<true/>
+	<key>KeepAlive</key>
 	<true/>
 	<key>Disabled</key>
 	<false/>
