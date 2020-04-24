@@ -22,37 +22,38 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mut prev_string: String = "".to_owned();
 
     loop {
-        let current_string = clipboard.get_contents()?;
-        let mut is_tweaked = false;
+        if let Ok(current_string) = clipboard.get_contents() {
+            let mut is_tweaked = false;
 
-        if current_string != prev_string {
-            if is_initial {
-                is_initial = false;
-            } else {
-                let mut args = cmd_args.to_owned();
-                args.push(current_string.to_owned());
-
-                let tweaked_string = run_command(&cmd_program, &args)?;
-
-                if tweaked_string.len() > 0 && tweaked_string != current_string {
-                    clipboard.set_contents(tweaked_string.clone())?;
-                    println!("Tweaked! (updated clipboard)\n");
-
-                    // Set `tweaked_string` as a new state so that
-                    // it prevents from repeated `set_contents` -> `get_contents` loop.
-                    prev_string = tweaked_string;
-                    is_tweaked = true;
+            if current_string != prev_string {
+                if is_initial {
+                    is_initial = false;
                 } else {
-                    println!("No tweaks (no updates in clipboard)\n");
+                    let mut args = cmd_args.to_owned();
+                    args.push(current_string.to_owned());
+
+                    let tweaked_string = run_command(&cmd_program, &args)?;
+
+                    if !tweaked_string.is_empty() && tweaked_string != current_string {
+                        clipboard.set_contents(tweaked_string.clone())?;
+                        println!("Tweaked! (updated clipboard)\n");
+
+                        // Set `tweaked_string` as a new state so that
+                        // it prevents from repeated `set_contents` -> `get_contents` loop.
+                        prev_string = tweaked_string;
+                        is_tweaked = true;
+                    } else {
+                        println!("No tweaks (no updates in clipboard)\n");
+                    }
                 }
+            }
+
+            if !is_tweaked {
+                prev_string = current_string;
             }
         }
 
-        if !is_tweaked {
-            prev_string = current_string;
-        }
-
-        let millis = Duration::from_millis(1000);
+        let millis = Duration::from_millis(500);
         thread::sleep(millis);
     }
 }
