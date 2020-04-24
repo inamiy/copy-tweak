@@ -18,7 +18,7 @@ fn tweak(str: &str) -> String {
 
 /// Trims Trello's redundant "title + \n + url" format.
 fn tweak_trello_url<'a>(str: &'a str) -> String {
-    let re = Regex::new(r"([\s\S]*)https://trello.com/c/(.+?)/[0-9]+.*").unwrap();
+    let re = Regex::new(r"([\s\S]*)https://trello.com/c/(.+?)/[0-9]+.*[^\)\}\]]").unwrap();
     let str = re.replace_all(&str, "${1}https://trello.com/c/${2}");
 
     let re = Regex::new(r" on .*? \| Trello").unwrap();
