@@ -10,7 +10,7 @@ func tweak(_ string: String) -> String {
 func tweak_trello_url(_ string: String) -> String {
     string
         .replacingOccurrences(
-            of: #"([\s\S])https://trello.com/c/(.+?)/[0-9]+.*[^\)\}\]]"#,
+            of: #"([\s\S])https://trello.com/c/(.+?)/[^#\)\}\]\s]+(#[^\)\}\]\s]+)?"#,
             with: "$1https://trello.com/c/$2",
             options: .regularExpression
         )

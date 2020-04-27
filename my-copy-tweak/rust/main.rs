@@ -18,8 +18,8 @@ fn tweak(str: &str) -> String {
 
 /// Trims Trello's redundant "title + \n + url" format.
 fn tweak_trello_url<'a>(str: &'a str) -> String {
-    let re = Regex::new(r"([\s\S]*)https://trello.com/c/(.+?)/[0-9]+.*[^\)\}\]]").unwrap();
-    let str = re.replace_all(&str, "${1}https://trello.com/c/${2}");
+    let re = Regex::new(r"([\s\S]*)https://trello.com/c/(.+?)/[^#\)\}\]\s]+(#[^\)\}\]\s]+)?").unwrap();
+    let str = re.replace_all(&str, "${1}https://trello.com/c/${2}${3}");
 
     let re = Regex::new(r" on .*? \| Trello").unwrap();
     let str = re.replace_all(&str, "");
@@ -29,13 +29,22 @@ fn tweak_trello_url<'a>(str: &'a str) -> String {
 
 #[test]
 fn test_tweak_trello_url() {
+    // Multiline link.
     assert_eq!(
         tweak_trello_url(
             "Some Card Title on Some Trello Project | Trello
-https://trello.com/c/deadbeef/427-%E3%83%AD%E3%83%BC%E3%83%AC%E3%83%A0%E3%82%A4%E3%83%97%E3%82%B5%E3%83%A0"
+https://trello.com/c/deadbeef/427-%E3%83%AD%E3%83%BC%E3%83%AC%E3%83%A0%E3%82%A4%E3%83%97%E3%82%B5%E3%83%A0#comment-cafebeef"
         ),
         "Some Card Title
-https://trello.com/c/deadbeef"
+https://trello.com/c/deadbeef#comment-cafebeef"
+    );
+
+    // Markdown link.
+    assert_eq!(
+        tweak_trello_url(
+            "[Some Card Title on Some Trello Project | Trello](https://trello.com/c/deadbeef/427-%E3%83%AD%E3%83%BC%E3%83%AC%E3%83%A0%E3%82%A4%E3%83%97%E3%82%B5%E3%83%A0#comment-cafebeef)"
+        ),
+        "[Some Card Title](https://trello.com/c/deadbeef#comment-cafebeef)"
     );
 }
 
